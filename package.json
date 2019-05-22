@@ -1,0 +1,20 @@
+{
+	"name": "devlapse",
+	"description": "Timelapse screenshots",
+	"author": "Stephen Leitnick",
+	"private": true,
+	"main": "main.js",
+	"scripts": {
+		"start": "electron ."
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Sleitnick/DevLapse.git"
+	},
+	"dependencies": {
+		"screenshot-desktop": "^1.7.0"
+	},
+	"devDependencies": {
+		"electron": "^5.0.1"
+	}
+}

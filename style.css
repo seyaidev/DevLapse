@@ -1,0 +1,12 @@
+body {
+	font-family: sans-serif;
+}
+
+#devlapse-form .input-group label {
+	display: block;
+	font-weight: bold;
+}
+
+#devlapse-form .input-group {
+	margin-bottom: 10px;
+}

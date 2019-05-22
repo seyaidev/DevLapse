@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>DevLapse</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<h1>DevLapse</h1>
+		<form id="devlapse-form">
+			<div class="input-group">
+				<label for="interval">Interval (seconds)</label>
+				<input id="interval" type="number" value="1">
+			</div>
+			<div class="input-group">
+				<label for="imgtype">Image Type</label>
+				<select id="imgtype">
+					<option>JPG</option>
+					<option>PNG</option>
+				</select>
+			</div>
+			<div class="input-group">
+				<label for="imgdir">Image Directory</label>
+				<input id="imgdir" type="file" webkitdirectory directory>
+			</div>
+			<div class="input-group">
+				<label for="monitor">Monitor</label>
+				<input id="monitor" type="button" value="Select Monitor">
+				<span id="monitor-selection"></span>
+			</div>
+			<input id="record-btn" type="button" value="Start Recording">
+		</form>
+		<script src="client.js"></script>
+	</body>
+</html>
