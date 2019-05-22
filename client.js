@@ -1,4 +1,9 @@
 const {ipcRenderer} = require("electron");
+const {createStore} = require("redux");
+const {reducer} = require("./reducer");
+
+const store = createStore(reducer);
+store.dispatch({type: "LOAD"});
 
 const RecordState = {
 	NOT_RECORDING: 1,
@@ -10,17 +15,24 @@ const recordBtn = document.getElementById("record-btn");
 const interval = document.getElementById("interval");
 const imgType = document.getElementById("imgtype");
 const imgDir = document.getElementById("imgdir");
+const monitor = document.getElementById("monitor");
+const monitorSelection = document.getElementById("monitor-selection");
 
-let selectedMonitor;
+const bindValueToStore = (element, actionType, actionName) => {
+	element.onchange = () => {
+		store.dispatch({type: actionType, [actionName]: element.value});
+	};
+};
+
 let recordingState = RecordState.NOT_RECORDING;
 
-ipcRenderer.on("monitor-selected", (event, arg) => {
-	selectedMonitor = arg;
-	document.getElementById("monitor-selection").innerHTML = arg;
+ipcRenderer.on("monitor-selected", (event, monitorId) => {
+	monitorSelection.innerHTML = monitorId;
+	store.dispatch({type: "SET_MONITOR", monitor: monitorId});
 });
 
-ipcRenderer.on("recording-change", (event, arg) => {
-	if (arg) {
+ipcRenderer.on("recording-change", (event, isRecording) => {
+	if (isRecording) {
 		recordingState = RecordState.RECORDING;
 		recordBtn.value = "Stop Recording";
 	} else {
@@ -29,12 +41,8 @@ ipcRenderer.on("recording-change", (event, arg) => {
 	}
 });
 
-document.getElementById("monitor").onclick = function() {
-	ipcRenderer.send("select-monitor");
-};
-
 const canStartRecording = () => {
-	return (interval.value && imgType.value && imgDir.value && selectedMonitor !== null);
+	return (interval.value && imgType.value && imgDir.value && monitor.value !== null);
 };
 
 recordBtn.onclick = function() {
@@ -53,3 +61,18 @@ recordBtn.onclick = function() {
 			break;
 	}
 };
+
+const afterStateLoaded = (initialState) => {
+	interval.value = initialState.interval;
+	imgType.value = initialState.imageType;
+	bindValueToStore(interval, "SET_INTERVAL", "interval");
+	monitor.onclick = function() {
+		ipcRenderer.send("select-monitor");
+	};
+}
+
+ipcRenderer.once("state-loaded", (event, state) => {
+	store.dispatch({type: "SET_STATE", state: state});
+	afterStateLoaded(store.getState());
+});
+ipcRenderer.send("load-state");

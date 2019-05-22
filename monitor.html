@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>DevLapse - Monitor Select</title>
+		<style>
+			body {
+				font-family: sans-serif;
+				overflow: hidden;
+			}
+			#title {
+				width: 100%;
+				height: 100vh;
+				line-height: 100vh;
+				text-align: center;
+				color: red;
+			}
+		</style>
+	</head>
+	<body>
+		<h1 id="title"></h1>
+		<script>
+
+			const {ipcRenderer} = require("electron");
+			let display;
+			let over = false;
+
+			function onClick() {
+				ipcRenderer.send("monitor-clicked", display.id);
+			}
+
+			ipcRenderer.once("display-info", (event, d) => {
+
+				display = d;
+				document.getElementById("title").innerHTML = display.name;
+
+				ipcRenderer.on("lost-focus", () => {
+					document.body.style.backgroundColor = "#F2000000";
+					over = false;
+				});
+
+				document.addEventListener("mousemove", () => {
+					if (over) return;
+					over = true;
+					document.body.style.backgroundColor = "#F2FFFFFF";
+					ipcRenderer.send("monitor-mouse-over", display.id);
+				});
+
+				document.addEventListener("click", onClick);
+
+			});
+
+		</script>
+	</body>
+</html>
