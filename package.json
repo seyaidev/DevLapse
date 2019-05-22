@@ -4,6 +4,7 @@
 	"author": "Stephen Leitnick",
 	"private": true,
 	"main": "main.js",
+	"license": "MIT",
 	"scripts": {
 		"start": "electron ."
 	},
