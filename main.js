@@ -7,14 +7,17 @@ let monitorSelectWindows = [];
 
 function createWindow() {
 	mainWindow = new BrowserWindow({
-		width: 800,
+		width: 400,
 		height: 600,
+		resizable: false,
+		maximizable: false,
 		webPreferences: {
 			nodeIntegration: true
 		}
 	});
+	mainWindow.setMenu(null);
 	mainWindow.loadFile("index.html");
-	mainWindow.webContents.openDevTools();
+	//mainWindow.webContents.openDevTools();
 	mainWindow.on("closed", () => {
 		for (const monitorWindow of monitorSelectWindows) {
 			monitorWindow.window.close();
@@ -66,6 +69,7 @@ ipcMain.on("select-monitor", (event, arg) => {
 				modal: true,
 				parent: mainWindow,
 				acceptFirstMouse: true,
+				alwaysOnTop: true,
 				webPreferences: {
 					nodeIntegration: true
 				}
