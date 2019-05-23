@@ -17,7 +17,7 @@ const singleMonitorPromise = screenshot.listDisplays().then((displays) => {
 
 function createWindow() {
 	mainWindow = new BrowserWindow({
-		width: 400,
+		width: 800,
 		height: 600,
 		resizable: false,
 		maximizable: false,

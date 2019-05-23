@@ -11,6 +11,7 @@
 				<label for="interval">Interval (seconds)</label>
 				<input id="interval" type="number">
 			</div>
+			<hr/>
 			<div class="input-group">
 				<label for="imgtype">Image Type</label>
 				<select id="imgtype">
@@ -18,16 +19,20 @@
 					<option>PNG</option>
 				</select>
 			</div>
+			<hr/>
 			<div class="input-group">
-				<label for="imgdir">Image Directory</label>
 				<input id="imgdir" type="file" webkitdirectory directory>
+				<label for="imgdir">Image Directory</label>
+				<p id="imgdirselection"></p>
 			</div>
+			<hr/>
 			<div class="input-group">
 				<label for="monitor">Monitor</label>
 				<input id="monitor" type="button" value="Select Monitor">
 				<span id="monitor-selection"></span>
 			</div>
-			<input id="record-btn" type="button" value="Start Recording" disabled>
+			<hr/>
+			<input id="record-btn" class="record" type="button" value="Start Recording" disabled>
 		</form>
 	</body>
 </html>

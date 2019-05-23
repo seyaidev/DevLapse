@@ -30,6 +30,10 @@ const bindValueToStore = (element, actionType, actionName) => {
 
 let recordingState = RecordState.NOT_RECORDING;
 
+imgDir.addEventListener("change", (event) => {
+	document.getElementById("imgdirselection").innerHTML = imgDir.files[0].path;
+});
+
 ipcRenderer.on("monitor-selected", (event, monitorId, singleMonitor) => {
 	monitorSelection.innerHTML = monitorId;
 	store.dispatch({type: "SET_MONITOR", monitor: monitorId});
@@ -85,5 +89,10 @@ ipcRenderer.once("state-loaded", (event, state) => {
 ipcRenderer.send("load-state");
 
 store.subscribe(() => {
+	const disableFields = recordingState !== RecordState.NOT_RECORDING;
 	recordBtn.disabled = !canStartRecording();
+	interval.disabled = disableFields;
+	imgType.disabled = disableFields;
+	imgDir.disabled = disableFields;
+	monitor.disabled = disableFields;
 });
