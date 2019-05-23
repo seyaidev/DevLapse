@@ -23,9 +23,10 @@ const monitor = document.getElementById("monitor") as HTMLInputElement;
 const monitorSelection = document.getElementById("monitor-selection");
 
 const bindValueToStore = (element, actionType, actionName) => {
-	element.onchange = () => {
-		store.dispatch({type: actionType, [actionName]: element.value});
-	};
+	element.addEventListener("change", (event) => {
+		const val = (element === imgDir ? element.files[0].path : element.value);
+		store.dispatch({type: actionType, [actionName]: val});
+	});
 };
 
 let recordingState = RecordState.NOT_RECORDING;
@@ -65,7 +66,7 @@ recordBtn.onclick = function() {
 		case RecordState.NOT_RECORDING:
 			if (canStartRecording()) {
 				recordingState = RecordState.BUSY;
-				ipcRenderer.send("record", true);
+				ipcRenderer.send("record", true, store.getState());
 			}
 			break;
 		default:
@@ -77,6 +78,8 @@ const afterStateLoaded = (initialState) => {
 	interval.value = initialState.interval;
 	imgType.value = initialState.imageType;
 	bindValueToStore(interval, "SET_INTERVAL", "interval");
+	bindValueToStore(imgType, "SET_IMAGE_TYPE", "imageType");
+	bindValueToStore(imgDir, "SET_IMAGE_DIRECTORY", "imageDirectory");
 	monitor.onclick = function() {
 		ipcRenderer.send("select-monitor");
 	};

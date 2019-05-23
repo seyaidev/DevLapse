@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import * as screenshot from "screenshot-desktop";
 import * as storage from "electron-json-storage";
+import * as recorder from "./recorder";
 
 let mainWindow;
 let monitorSelectWindows = [];
@@ -100,11 +101,14 @@ ipcMain.on("select-monitor", (event, arg) => {
 	});
 });
 
-ipcMain.on("record", (event, startRecord) => {
+ipcMain.on("record", (event, startRecord, state) => {
 	if (startRecord) {
 		event.reply("recording-change", true);
+		console.log("STATE", state);
+		recorder.start(state.imageDirectory, state.selectedMonitor, state.imageType, state.interval);
 	} else {
 		event.reply("recording-change", false);
+		recorder.stop();
 	}
 });
 

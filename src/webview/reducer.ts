@@ -20,6 +20,20 @@ export function reducer(state, action) {
 			};
 			saveState(state);
 			return state;
+		case "SET_IMAGE_TYPE":
+			state = {
+				...state,
+				imageType: action.imageType
+			};
+			saveState(state);
+			return state;
+		case "SET_IMAGE_DIRECTORY":
+			state = {
+				...state,
+				imageDirectory: action.imageDirectory
+			};
+			saveState(state);
+			return state;
 		case "SET_MONITOR":
 			state = {
 				...state,

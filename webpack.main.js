@@ -7,10 +7,14 @@ module.exports = (env, argv) => {
 	const config = {
 		target: "electron-main",
 		externals: {
-			"screenshot-desktop": "require(\"screenshot-desktop\")"
+			"screenshot-desktop": "require(\"screenshot-desktop\")",
+			"ffmpeg-binaries": "require(\"ffmpeg-binaries\")"
+		},
+		node: {
+			__dirname: false
 		},
 		entry: {
-			main: "./src/main.ts"
+			main: path.join(__dirname, "src", "main.ts")
 		},
 		output: {
 			path: public,

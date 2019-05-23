@@ -7,8 +7,9 @@
 	"main": "dist/main.js",
 	"license": "MIT",
 	"scripts": {
-		"build": "node prebuild.js && webpack --config webpack.main.js --mode production && webpack --config webpack.renderer.js --mode production",
-		"local": "node prebuild.js && concurrently --kill-others \"webpack --config webpack.main.js --mode development --watch\" \"webpack --config webpack.renderer.js --mode development --watch\"",
+		"install_dist": "npm i --prefix ./dist screenshot-desktop ffmpeg-binaries",
+		"build": "npm run install_dist && webpack --config webpack.main.js --mode production && webpack --config webpack.renderer.js --mode production",
+		"local": "npm run install_dist && concurrently --kill-others \"webpack --config webpack.main.js --mode development --watch\" \"webpack --config webpack.renderer.js --mode development --watch\"",
 		"start": "electron ."
 	},
 	"repository": {
@@ -17,8 +18,10 @@
 	},
 	"dependencies": {
 		"electron-json-storage": "^4.1.6",
+		"ffmpeg-binaries": "^4.0.0",
 		"redux": "^4.0.1",
-		"screenshot-desktop": "^1.7.0"
+		"screenshot-desktop": "^1.7.0",
+		"tmp": "^0.1.0"
 	},
 	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "^1.9.0",
