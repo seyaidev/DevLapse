@@ -6,10 +6,10 @@
 	</head>
 	<body>
 		<h1>DevLapse</h1>
-		<form id="devlapse-form">
+		<form id="devlapse-form" onsubmit="event.preventDefault()">
 			<div class="input-group">
 				<label for="interval">Interval (seconds)</label>
-				<input id="interval" type="number">
+				<input id="interval" type="number" step="0.1">
 			</div>
 			<hr/>
 			<div class="input-group">

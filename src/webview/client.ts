@@ -54,7 +54,7 @@ ipcRenderer.on("recording-change", (event, isRecording) => {
 });
 
 const canStartRecording = () => {
-	return (interval.value && imgType.value && imgDir.value && monitor.value !== null);
+	return (interval.value && imgType.value && imgDir.value && store.getState().selectedMonitor);
 };
 
 recordBtn.onclick = function() {

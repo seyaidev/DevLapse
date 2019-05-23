@@ -4,9 +4,6 @@ import * as path from "path";
 import { exec } from "child_process";
 import * as ffmpegPath from "ffmpeg-binaries";
 
-console.log("DIRNAME", __dirname);
-console.log("FFMPEG", ffmpegPath);
-
 const ffmpegAbsPath = path.resolve(__dirname, ffmpegPath);
 
 let recording = false;
