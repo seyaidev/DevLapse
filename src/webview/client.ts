@@ -1,6 +1,10 @@
-const {ipcRenderer} = require("electron");
-const {createStore} = require("redux");
-const {reducer} = require("./reducer");
+import { ipcRenderer } from "electron";
+import { createStore } from "redux";
+import { reducer } from "./reducer";
+
+// Static assets:
+import "./sass/style.scss";
+import "./monitor.html";
 
 const store = createStore(reducer);
 store.dispatch({type: "LOAD"});
@@ -11,11 +15,11 @@ const RecordState = {
 	BUSY: 100
 };
 
-const recordBtn = document.getElementById("record-btn");
-const interval = document.getElementById("interval");
-const imgType = document.getElementById("imgtype");
-const imgDir = document.getElementById("imgdir");
-const monitor = document.getElementById("monitor");
+const recordBtn = document.getElementById("record-btn") as HTMLInputElement;
+const interval = document.getElementById("interval") as HTMLInputElement;
+const imgType = document.getElementById("imgtype") as HTMLInputElement;
+const imgDir = document.getElementById("imgdir") as HTMLInputElement;
+const monitor = document.getElementById("monitor") as HTMLInputElement;
 const monitorSelection = document.getElementById("monitor-selection");
 
 const bindValueToStore = (element, actionType, actionName) => {
@@ -26,9 +30,12 @@ const bindValueToStore = (element, actionType, actionName) => {
 
 let recordingState = RecordState.NOT_RECORDING;
 
-ipcRenderer.on("monitor-selected", (event, monitorId) => {
+ipcRenderer.on("monitor-selected", (event, monitorId, singleMonitor) => {
 	monitorSelection.innerHTML = monitorId;
 	store.dispatch({type: "SET_MONITOR", monitor: monitorId});
+	if (singleMonitor) {
+		monitor.disabled = true;
+	}
 });
 
 ipcRenderer.on("recording-change", (event, isRecording) => {
@@ -76,3 +83,7 @@ ipcRenderer.once("state-loaded", (event, state) => {
 	afterStateLoaded(store.getState());
 });
 ipcRenderer.send("load-state");
+
+store.subscribe(() => {
+	recordBtn.disabled = !canStartRecording();
+});

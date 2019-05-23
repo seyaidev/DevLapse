@@ -1,4 +1,4 @@
-const {ipcRenderer} = require("electron");
+import { ipcRenderer } from "electron";
 
 const defaultState = {
 	interval: 2,
@@ -9,7 +9,7 @@ const defaultState = {
 
 const saveState = (state) => ipcRenderer.send("save-state", state);
 
-exports.reducer = (state, action) => {
+export function reducer(state, action) {
 	switch(action.type) {
 		case "SET_STATE":
 			return {...defaultState, ...action.state};

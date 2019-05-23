@@ -1,9 +1,19 @@
-const {app, BrowserWindow, ipcMain} = require("electron");
-const screenshot = require("screenshot-desktop");
-const storage = require("electron-json-storage");
+import { app, BrowserWindow, ipcMain } from "electron";
+import * as screenshot from "screenshot-desktop";
+import * as storage from "electron-json-storage";
 
 let mainWindow;
 let monitorSelectWindows = [];
+
+let singleDisplay = null;
+const singleMonitorPromise = screenshot.listDisplays().then((displays) => {
+	if (displays.length === 1) {
+		singleDisplay = displays[0];
+	}
+}).catch((err) => {
+	console.error(err);
+	process.exit();
+});
 
 function createWindow() {
 	mainWindow = new BrowserWindow({
@@ -16,7 +26,7 @@ function createWindow() {
 		}
 	});
 	mainWindow.setMenu(null);
-	mainWindow.loadFile("index.html");
+	mainWindow.loadFile("./renderer/index.html");
 	//mainWindow.webContents.openDevTools();
 	mainWindow.on("closed", () => {
 		for (const monitorWindow of monitorSelectWindows) {
@@ -24,6 +34,12 @@ function createWindow() {
 		}
 		monitorSelectWindows = [];
 		mainWindow = null;
+	});
+	mainWindow.webContents.on("did-finish-load", async () => {
+		await singleMonitorPromise;
+		if (singleDisplay) {
+			mainWindow.webContents.send("monitor-selected", singleDisplay.id, true);
+		}
 	});
 }
 
@@ -49,6 +65,7 @@ ipcMain.on("monitor-clicked", (event, displayId) => {
 
 ipcMain.on("select-monitor", (event, arg) => {
 	//event.reply("monitor-selected", 1);
+	if (singleDisplay) return;
 	screenshot.listDisplays().then((displays) => {
 		for (const display of displays) {
 			const window = new BrowserWindow({
@@ -63,7 +80,6 @@ ipcMain.on("select-monitor", (event, arg) => {
 				fullscreenable: false,
 				frame: false,
 				transparent: true,
-				backgroundColor: "#F2000000",
 				hasShadow: false,
 				titleBarStyle: "hidden",
 				modal: true,
@@ -75,7 +91,7 @@ ipcMain.on("select-monitor", (event, arg) => {
 				}
 			});
 			monitorSelectWindows.push({window, display});
-			window.loadFile("monitor.html");
+			window.loadFile("./renderer/monitor.html");
 			//window.webContents.openDevTools();
 			window.webContents.on("did-finish-load", () => {
 				window.webContents.send("display-info", display);

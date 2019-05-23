@@ -1,0 +1,22 @@
+body {
+	font-family: sans-serif;
+}
+
+#devlapse-form {
+
+	.input-group label {
+		display: block;
+		font-weight: bold;
+	}
+	
+	.input-group {
+		margin-bottom: 10px;
+	}
+	
+	input[type=button], #devlapse-form[type=file] {
+		border: none;
+		border-radius: 6px;
+		padding: 10px;
+	}
+
+}

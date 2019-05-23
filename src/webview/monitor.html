@@ -7,6 +7,8 @@
 			body {
 				font-family: sans-serif;
 				overflow: hidden;
+				cursor: pointer;
+				background-color: rgba(0, 0, 0, 0.8);
 			}
 			#title {
 				width: 100%;
@@ -14,6 +16,7 @@
 				line-height: 100vh;
 				text-align: center;
 				color: red;
+				cursor: pointer;
 			}
 		</style>
 	</head>
@@ -35,14 +38,14 @@
 				document.getElementById("title").innerHTML = display.name;
 
 				ipcRenderer.on("lost-focus", () => {
-					document.body.style.backgroundColor = "#F2000000";
+					document.body.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
 					over = false;
 				});
 
 				document.addEventListener("mousemove", () => {
 					if (over) return;
 					over = true;
-					document.body.style.backgroundColor = "#F2FFFFFF";
+					document.body.style.backgroundColor = "rgba(71, 71, 71, 0.8)";
 					ipcRenderer.send("monitor-mouse-over", display.id);
 				});
 
