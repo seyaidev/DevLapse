@@ -26,8 +26,8 @@ function createWindow() {
 		}
 	});
 	mainWindow.setMenu(null);
-	mainWindow.loadFile("./renderer/index.html");
-	//mainWindow.webContents.openDevTools();
+	mainWindow.loadFile("./dist/webview/index.html");
+	mainWindow.webContents.openDevTools();
 	mainWindow.on("closed", () => {
 		for (const monitorWindow of monitorSelectWindows) {
 			monitorWindow.window.close();
@@ -91,7 +91,7 @@ ipcMain.on("select-monitor", (event, arg) => {
 				}
 			});
 			monitorSelectWindows.push({window, display});
-			window.loadFile("./renderer/monitor.html");
+			window.loadFile("./dist/webview/monitor.html");
 			//window.webContents.openDevTools();
 			window.webContents.on("did-finish-load", () => {
 				window.webContents.send("display-info", display);

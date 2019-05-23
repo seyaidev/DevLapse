@@ -7,7 +7,7 @@ module.exports = (env, argv) => {
 	const config = {
 		target: "electron-main",
 		externals: {
-			"screenshot-desktop": "screenshot-desktop"
+			"screenshot-desktop": "require(\"screenshot-desktop\")"
 		},
 		entry: {
 			main: "./src/main.ts"
