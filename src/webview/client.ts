@@ -16,6 +16,9 @@ const RecordState = {
 	BUSY: 100
 };
 
+const MIN_INTERVAL = 0.1;
+const MAX_INTERVAL = 900;
+
 const recordBtn = document.getElementById("record-btn") as HTMLInputElement;
 const pauseBtn = document.getElementById("pause-btn") as HTMLInputElement;
 const interval = document.getElementById("interval") as HTMLInputElement;
@@ -105,12 +108,17 @@ const afterStateLoaded = (initialState) => {
 	interval.value = initialState.interval;
 	imgType.value = initialState.imageType;
 	monitorSelection.innerHTML = initialState.selectedMonitor || "";
-	bindValueToStore(interval, "SET_INTERVAL", "interval");
 	bindValueToStore(imgType, "SET_IMAGE_TYPE", "imageType");
 	interval.addEventListener("change", (event) => {
 		const num = parseFloat(interval.value);
-		if ((!num) || num < 0.1 || num > 900) {
-			interval.value = "1";
+		let n = num;
+		if ((!num) || num < MIN_INTERVAL || num > MAX_INTERVAL) {
+			n = (typeof num === "number" ? num : 1);
+			n = (n < MIN_INTERVAL ? MIN_INTERVAL : n > MAX_INTERVAL ? MAX_INTERVAL : n)
+		}
+		if (n !== num) {
+			interval.value = n.toString();
+			store.dispatch({type: "SET_INTERVAL", interval: n});
 		}
 	});
 	monitor.addEventListener("click", () => {

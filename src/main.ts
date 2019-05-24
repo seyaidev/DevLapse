@@ -100,7 +100,6 @@ ipcMain.on("select-monitor", (event, arg) => {
 			window.loadFile("./dist/webview/monitor.html");
 			//window.webContents.openDevTools();
 			window.webContents.on("did-finish-load", () => {
-				console.log("Showing window");
 				window.webContents.send("display-info", display);
 			});
 		}
