@@ -3,7 +3,7 @@ const path = require("path");
 
 module.exports = (env, argv) => {
 	const isProd = (argv.mode === "production");
-	const public = path.resolve(__dirname, "./dist");
+	const public = path.resolve(__dirname, "./build");
 	const config = {
 		target: "electron-main",
 		externals: {

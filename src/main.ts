@@ -29,7 +29,7 @@ function createWindow() {
 		}
 	});
 	mainWindow.setMenu(null);
-	mainWindow.loadFile("./dist/webview/index.html");
+	mainWindow.loadFile("./build/webview/index.html");
 	if (DEBUG) mainWindow.webContents.openDevTools();
 	mainWindow.on("closed", () => {
 		for (const monitorWindow of monitorSelectWindows) {
@@ -99,7 +99,7 @@ ipcMain.on("select-monitor", (event, arg) => {
 				}
 			});
 			monitorSelectWindows.push({window, display});
-			window.loadFile("./dist/webview/monitor.html");
+			window.loadFile("./build/webview/monitor.html");
 			//window.webContents.openDevTools();
 			window.webContents.on("did-finish-load", () => {
 				window.webContents.send("display-info", display);

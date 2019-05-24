@@ -11,7 +11,7 @@ const miniCssExtractPlugin = new MiniCssExtractPlugin({
 
 module.exports = (env, argv) => {
 	const isProd = (argv.mode === "production");
-	const public = path.resolve(__dirname, "./dist/webview");
+	const public = path.resolve(__dirname, "./build/webview");
 	const htmlPlugin = new HtmlWebPackPlugin({
 		template: "./src/webview/index.html",
 		filename: path.resolve(public, "index.html")
@@ -55,7 +55,7 @@ module.exports = (env, argv) => {
 							loader: "sass-loader",
 							options: {
 								sourceMap: !isProd,
-								outFile: `./dist/css/main.css`,
+								outFile: `./build/css/main.css`,
 								minimize: true
 							}
 						}

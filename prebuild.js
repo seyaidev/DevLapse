@@ -6,7 +6,7 @@ fs.readFile("./package.json", {encoding: "utf8"}, function(err, data) {
 	if (err) throw err;
 	data = JSON.parse(data);
 	const dependencies = data.dependencies;
-	const installs = ["npm", "i", "--prefix", "./dist"];
+	const installs = ["npm", "i", "--prefix", "./build"];
 	for (const dependency in dependencies) {
 		installs.push(`${dependency}@${dependencies[dependency]}`);
 	}
