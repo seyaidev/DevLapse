@@ -107,6 +107,12 @@ const afterStateLoaded = (initialState) => {
 	monitorSelection.innerHTML = initialState.selectedMonitor || "";
 	bindValueToStore(interval, "SET_INTERVAL", "interval");
 	bindValueToStore(imgType, "SET_IMAGE_TYPE", "imageType");
+	interval.addEventListener("change", (event) => {
+		const num = parseFloat(interval.value);
+		if ((!num) || num < 0.1 || num > 900) {
+			interval.value = "1";
+		}
+	});
 	monitor.addEventListener("click", () => {
 		ipcRenderer.send("select-monitor");
 	});
@@ -134,4 +140,9 @@ store.subscribe(() => {
 	imgType.disabled = disableFields;
 	imgDir.disabled = disableFields;
 	monitor.disabled = disableFields;
+});
+
+document.getElementById("devlapse-form").addEventListener("submit", (event) => {
+	event.preventDefault();
+	return false;
 });

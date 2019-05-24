@@ -7,7 +7,7 @@ body {
 	.input-group label {
 		display: block;
 		font-weight: bold;
-		margin-bottom: 4px;
+		padding-bottom: 4px;
 	}
 	
 	.input-group {
@@ -20,6 +20,9 @@ body {
 		font-family: 700;
 		background-color: rgb(221, 221, 221);
 		border: none;
+		&:hover {
+			background-color: rgb(180, 180, 180);
+		}
 	}
 
 	input[type=number] {
