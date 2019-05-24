@@ -9,7 +9,7 @@
 	"scripts": {
 		"install_dist": "npm i --prefix ./dist screenshot-desktop ffmpeg-binaries",
 		"build": "npm run install_dist && webpack --config webpack.main.js --mode production && webpack --config webpack.renderer.js --mode production",
-		"local": "npm run install_dist && concurrently --kill-others \"webpack --config webpack.main.js --mode development --watch\" \"webpack --config webpack.renderer.js --mode development --watch\"",
+		"dev": "npm run install_dist && concurrently --kill-others \"webpack --config webpack.main.js --mode development --watch\" \"webpack --config webpack.renderer.js --mode development --watch\"",
 		"start": "electron ."
 	},
 	"repository": {
