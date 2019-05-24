@@ -18,7 +18,7 @@ const singleMonitorPromise = screenshot.listDisplays().then((displays) => {
 
 function createWindow() {
 	mainWindow = new BrowserWindow({
-		width: 700,
+		width: 300,
 		height: 500,
 		resizable: false,
 		maximizable: false,
@@ -28,7 +28,7 @@ function createWindow() {
 	});
 	mainWindow.setMenu(null);
 	mainWindow.loadFile("./dist/webview/index.html");
-	mainWindow.webContents.openDevTools();
+	//mainWindow.webContents.openDevTools();
 	mainWindow.on("closed", () => {
 		for (const monitorWindow of monitorSelectWindows) {
 			monitorWindow.window.close();
