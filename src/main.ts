@@ -18,8 +18,8 @@ const singleMonitorPromise = screenshot.listDisplays().then((displays) => {
 
 function createWindow() {
 	mainWindow = new BrowserWindow({
-		width: 300,
-		height: 410,
+		width: 700,
+		height: 500,
 		resizable: false,
 		maximizable: false,
 		webPreferences: {
@@ -28,7 +28,7 @@ function createWindow() {
 	});
 	mainWindow.setMenu(null);
 	mainWindow.loadFile("./dist/webview/index.html");
-	//mainWindow.webContents.openDevTools();
+	mainWindow.webContents.openDevTools();
 	mainWindow.on("closed", () => {
 		for (const monitorWindow of monitorSelectWindows) {
 			monitorWindow.window.close();
@@ -44,12 +44,17 @@ function createWindow() {
 	});
 }
 
-app.on("ready", createWindow);
+app.on("ready", () => {
+	createWindow();
+});
+
 app.on("window-all-closed", () => {
 	if (process.platform !== "darwin") {
+		recorder.stopQuit();
 		app.quit();
 	}
 });
+
 app.on("activate", () => {
 	if (mainWindow === null) {
 		createWindow();
@@ -95,6 +100,7 @@ ipcMain.on("select-monitor", (event, arg) => {
 			window.loadFile("./dist/webview/monitor.html");
 			//window.webContents.openDevTools();
 			window.webContents.on("did-finish-load", () => {
+				console.log("Showing window");
 				window.webContents.send("display-info", display);
 			});
 		}
@@ -104,11 +110,20 @@ ipcMain.on("select-monitor", (event, arg) => {
 ipcMain.on("record", (event, startRecord, state) => {
 	if (startRecord) {
 		event.reply("recording-change", true);
-		console.log("STATE", state);
-		recorder.start(state.imageDirectory, state.selectedMonitor, state.imageType, state.interval);
+		recorder.start(mainWindow, state.imageDirectory, state.selectedMonitor, state.imageType, state.interval);
 	} else {
 		event.reply("recording-change", false);
 		recorder.stop();
+	}
+});
+
+ipcMain.on("pause", (event, pause) => {
+	if (pause) {
+		recorder.pause();
+		event.reply("pause-change", true);
+	} else {
+		recorder.resume();
+		event.reply("pause-change", false);
 	}
 });
 
@@ -119,7 +134,25 @@ ipcMain.on("save-state", (event, state) => {
 ipcMain.on("load-state", (event) => {
 	storage.get("devlapse", (err, data) => {
 		if (err) throw err;
-		event.reply("state-loaded", data);
+		const monitorIdExists = (id: string): Promise<boolean> => {
+			return new Promise((resolve, reject) => {
+				screenshot.listDisplays().then((displays) => {
+					for (const display of displays) {
+						if (display.id === id) {
+							resolve(true);
+							return;
+						}
+					}
+					resolve(false);
+				}).catch(reject);
+			});
+		};
+		monitorIdExists(data.selectedMonitor).then((monitorExists) => {
+			if (!monitorExists) {
+				data.selectedMonitor = null;
+			}
+			event.reply("state-loaded", data);
+		});
 	});
 });
 

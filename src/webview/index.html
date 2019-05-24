@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'">
 		<title>DevLapse</title>
 	</head>
 	<body>
@@ -21,9 +22,9 @@
 			</div>
 			<hr/>
 			<div class="input-group">
-				<input id="imgdir" type="file" webkitdirectory directory>
-				<label for="imgdir">Image Directory</label>
-				<p id="imgdirselection"></p>
+				<label for="imgdir">Save Path</label>
+				<input id="imgdir" type="button" value="Filepath">
+				<p id="imgdirselection">[No selection]</p>
 			</div>
 			<hr/>
 			<div class="input-group">
@@ -33,6 +34,7 @@
 			</div>
 			<hr/>
 			<input id="record-btn" class="record" type="button" value="Start Recording" disabled>
+			<input id="pause-btn" class="record" type="button" value="Pause" disabled>
 		</form>
 	</body>
 </html>

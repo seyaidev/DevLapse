@@ -1,3 +1,4 @@
+import { BrowserWindow } from "electron";
 import * as screenshot from "screenshot-desktop";
 import * as tmp from "tmp";
 import * as path from "path";
@@ -8,6 +9,7 @@ const ffmpegAbsPath = path.resolve(__dirname, ffmpegPath);
 
 let recording = false;
 let paused = false;
+let quit = false;
 
 let recordId = 0;
 
@@ -16,7 +18,7 @@ tmp.setGracefulCleanup();
 
 const sleep = (duration: number) => new Promise((resolve, reject) => setTimeout(resolve, duration));
 
-interface TempDir {
+export interface TempDir {
 	path: string;
 	cleanup: () => void;
 }
@@ -35,12 +37,13 @@ function createTempDir(): Promise<TempDir> {
 }
 
 
-function imagesToVideo(tempDir: TempDir, directory: string, format: string) {
-	const filename = "TEST";
+function imagesToVideo(tempDir: TempDir, filepath: string, format: string) {
+	if (!filepath.endsWith(".mp4")) {
+		filepath += ".mp4";
+	}
 	return new Promise((resolve, reject) => {
-		//const command = `cd /d ${path.dirname(ffmpegAbsPath)} && ${path.basename(ffmpegAbsPath)} -r 60 -f image2 -s 1920x1080 -i ${path.join(tempDir.path, "s")}_%04d.${format} -vcodec libx264 -crf 25 -pix_fmt yuv420p ${path.join(directory, filename)}.mp4`;
-		const command = `${ffmpegAbsPath} -r 60 -f image2 -s 1920x1080 -i ${path.join(tempDir.path, "s")}_%04d.${format} -vcodec libx264 -crf 25 -pix_fmt yuv420p ${path.join(directory, filename)}.mp4`;
-		console.log("FFMPEG command:", command);
+		const command = `${ffmpegAbsPath} -y -r 60 -f image2 -s 1920x1080 -i ${path.join(tempDir.path, "f")}_%07d.${format} -vcodec libx264 -crf 25 -pix_fmt yuv420p ${filepath}`;
+		console.log("FFMPEG:", command);
 		exec(command, (err, stdout, stderr) => {
 			if (err) {
 				console.error(err);
@@ -55,7 +58,7 @@ function imagesToVideo(tempDir: TempDir, directory: string, format: string) {
 }
 
 
-export function start(directory: string, displayId: string, format: string, interval: number) {
+export function start(parent: BrowserWindow, filepath: string, displayId: string, format: string, interval: number) {
 
 	if (recording) throw new Error("Already recording");
 
@@ -66,21 +69,22 @@ export function start(directory: string, displayId: string, format: string, inte
 
 	const record = async () => {
 		const tempDir = await createTempDir();
-		let nextShot = Date.now() + interval;
 		let frame = 0;
 		while (id === recordId) {
-			await sleep(nextShot - Date.now());
-			nextShot += interval;
-			frame++;
-			const filename = path.join(tempDir.path, "s_" + frame.toString().padStart(4, "0") + "." + format);
-			console.log(frame, filename);
-			await screenshot({filename, screen: displayId});
+			await sleep(interval);
+			if (!paused) {
+				frame++;
+				const filename = path.join(tempDir.path, "f_" + frame.toString().padStart(7, "0") + "." + format);
+				console.log(frame, filename);
+				await screenshot({filename, screen: displayId});
+			}
 		}
 		return tempDir;
 	};
 
 	return record().then((tempDir) => {
-		return imagesToVideo(tempDir, directory, format);
+		if (quit) return;
+		return imagesToVideo(tempDir, filepath, format);
 	}).catch((err) => {
 		console.error(err);
 	});
@@ -91,19 +95,28 @@ export function start(directory: string, displayId: string, format: string, inte
 export function stop() {
 	if (!recording) return;
 	recording = false;
+	paused = false;
 	recordId = 0;
 }
 
 
+export function stopQuit() {
+	quit = true;
+	stop();
+}
+
+
 export function pause() {
-	if (!recording) throw new Error("Not recording");
-	if (paused) return;
+	if ((!recording) || paused) return;
+	paused = true;
+	console.log("Paused");
 }
 
 
 export function resume() {
-	if (!recording) throw new Error("Not recording");
-	if (!paused) return;
+	if ((!recording) || (!paused)) return;
+	paused = false;
+	console.log("Resumed");
 }
 
 

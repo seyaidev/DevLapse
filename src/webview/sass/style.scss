@@ -7,10 +7,26 @@ body {
 	.input-group label {
 		display: block;
 		font-weight: bold;
+		margin-bottom: 4px;
 	}
 	
 	.input-group {
 		margin-bottom: 10px;
+	}
+
+	select {
+		border-radius: 6px;
+		padding: 5px;
+		font-family: 700;
+		background-color: rgb(221, 221, 221);
+		border: none;
+	}
+
+	input[type=number] {
+		border-radius: 6px;
+		border: 1px solid rgb(200, 200, 200);
+		padding: 10px;
+		font-weight: 700;
 	}
 
 	input[type=file] {
