@@ -3,6 +3,8 @@ import * as screenshot from "screenshot-desktop";
 import * as storage from "electron-json-storage";
 import * as recorder from "./recorder";
 
+const DEBUG = true;
+
 let mainWindow;
 let monitorSelectWindows = [];
 
@@ -18,7 +20,7 @@ const singleMonitorPromise = screenshot.listDisplays().then((displays) => {
 
 function createWindow() {
 	mainWindow = new BrowserWindow({
-		width: 300,
+		width: DEBUG ? 700 : 300,
 		height: 500,
 		resizable: false,
 		maximizable: false,
@@ -28,7 +30,7 @@ function createWindow() {
 	});
 	mainWindow.setMenu(null);
 	mainWindow.loadFile("./dist/webview/index.html");
-	//mainWindow.webContents.openDevTools();
+	if (DEBUG) mainWindow.webContents.openDevTools();
 	mainWindow.on("closed", () => {
 		for (const monitorWindow of monitorSelectWindows) {
 			monitorWindow.window.close();

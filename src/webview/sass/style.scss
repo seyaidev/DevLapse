@@ -1,3 +1,5 @@
+$input-radius: 40px;
+
 body {
 	font-family: sans-serif;
 	user-select: none;
@@ -16,7 +18,7 @@ body {
 	}
 
 	select {
-		border-radius: 6px;
+		border-radius: $input-radius;
 		padding: 5px;
 		font-family: 700;
 		background-color: rgb(221, 221, 221);
@@ -38,7 +40,7 @@ body {
 	}
 
 	input[type=number] {
-		border-radius: 6px;
+		border-radius: $input-radius;
 		border: 1px solid rgb(200, 200, 200);
 		padding: 10px;
 		font-weight: 700;
@@ -53,7 +55,7 @@ body {
 		z-index: -1;
 		& + label {
 			padding: 10px;
-			border-radius: 6px;
+			border-radius: $input-radius;
 			color: black;
 			background-color: rgb(221, 221, 221);
 			display: inline-block;
@@ -70,7 +72,7 @@ body {
 	
 	input[type=button] {
 		border: none;
-		border-radius: 6px;
+		border-radius: $input-radius;
 		padding: 10px;
 		background-color: rgb(221, 221, 221);
 		&:hover {

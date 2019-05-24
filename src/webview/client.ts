@@ -110,6 +110,7 @@ const afterStateLoaded = (initialState) => {
 	monitorSelection.innerHTML = initialState.selectedMonitor || "";
 	bindValueToStore(imgType, "SET_IMAGE_TYPE", "imageType");
 	interval.addEventListener("change", (event) => {
+		console.log("Interval changed");
 		const num = parseFloat(interval.value);
 		let n = num;
 		if ((!num) || num < MIN_INTERVAL || num > MAX_INTERVAL) {
@@ -118,8 +119,8 @@ const afterStateLoaded = (initialState) => {
 		}
 		if (n !== num) {
 			interval.value = n.toString();
-			store.dispatch({type: "SET_INTERVAL", interval: n});
 		}
+		store.dispatch({type: "SET_INTERVAL", interval: n});
 	});
 	monitor.addEventListener("click", () => {
 		ipcRenderer.send("select-monitor");

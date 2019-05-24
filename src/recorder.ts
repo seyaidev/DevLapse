@@ -16,7 +16,33 @@ let recordId = 0;
 tmp.setGracefulCleanup();
 
 
-const sleep = (duration: number) => new Promise((resolve, reject) => setTimeout(resolve, duration));
+//const sleep = (duration: number) => new Promise((resolve, reject) => setTimeout(resolve, duration));
+
+class Sleep {
+	private timeout;
+	private readonly duration: number;
+	private started = false;
+	private resolver: (value?: {} | PromiseLike<{}>) => void;
+	constructor(duration: number) {
+		this.duration = duration;
+	}
+	start = () => {
+		if (this.started) return;
+		this.started = true;
+		const self = this;
+		return new Promise((resolve, reject) => {
+			self.resolver = resolve;
+			self.timeout = setTimeout(resolve, this.duration);
+		});
+	}
+	cancel = () => {
+		if (!this.timeout) return;
+		clearTimeout(this.timeout);
+		this.resolver();
+	}
+}
+
+let curSleep: Sleep = null;
 
 export interface TempDir {
 	path: string;
@@ -71,7 +97,10 @@ export function start(parent: BrowserWindow, filepath: string, displayId: string
 		const tempDir = await createTempDir();
 		let frame = 0;
 		while (id === recordId) {
-			await sleep(interval);
+			//await sleep(interval);
+			curSleep = new Sleep(interval);
+			await curSleep.start();
+			if (id !== recordId) break;
 			if (!paused) {
 				frame++;
 				const filename = path.join(tempDir.path, "f_" + frame.toString().padStart(7, "0") + "." + format);
@@ -79,6 +108,7 @@ export function start(parent: BrowserWindow, filepath: string, displayId: string
 				await screenshot({filename, screen: displayId});
 			}
 		}
+		console.log("Recording done");
 		return tempDir;
 	};
 
@@ -94,6 +124,10 @@ export function start(parent: BrowserWindow, filepath: string, displayId: string
 
 export function stop() {
 	if (!recording) return;
+	if (curSleep) {
+		curSleep.cancel();
+		curSleep = null;
+	}
 	recording = false;
 	paused = false;
 	recordId = 0;
