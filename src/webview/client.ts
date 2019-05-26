@@ -2,10 +2,13 @@ import { ipcRenderer } from "electron";
 import { createStore } from "redux";
 import { reducer } from "./reducer";
 const { dialog } = require("electron").remote;
+import "../../semantic/dist/semantic.min.js";
 
 // Static assets:
 import "./sass/style.scss";
 import "./monitor.html";
+
+//declare const _VERSION: string;
 
 const store = createStore(reducer);
 

@@ -1,111 +1,25 @@
 $input-radius: 40px;
 
+@import "fonts";
+@import "~../../../semantic/dist/semantic.min.css";
+
 body {
-	font-family: sans-serif;
+	font-family: "Ubuntu", sans-serif;
 	user-select: none;
+	margin: 10px;
 }
 
-#devlapse-form {
+.title {
+	color: rgb(50, 50, 50);
+	margin-bottom: 0;
+	text-align: center;
+	width: 100%;
+}
 
-	.input-group label {
-		display: block;
-		font-weight: bold;
-		padding-bottom: 4px;
-	}
-	
-	.input-group {
-		margin-bottom: 10px;
-	}
-
-	select {
-		border-radius: $input-radius;
-		padding: 5px;
-		font-family: 700;
-		background-color: rgb(221, 221, 221);
-		border: none;
-		cursor: pointer;
-		&:hover {
-			background-color: rgb(180, 180, 180);
-		}
-	}
-
-	input {
-		cursor: pointer;
-		&[type=number], &[type=text] {
-			cursor: text;
-		}
-		&[disabled] {
-			cursor: default;
-		}
-	}
-
-	input[type=number] {
-		border-radius: $input-radius;
-		border: 1px solid rgb(200, 200, 200);
-		padding: 10px;
-		font-weight: 700;
-	}
-
-	input[type=file] {
-		width: 0.1px;
-		height: 0.1px;
-		opacity: 0;
-		overflow: hidden;
-		position: absolute;
-		z-index: -1;
-		& + label {
-			padding: 10px;
-			border-radius: $input-radius;
-			color: black;
-			background-color: rgb(221, 221, 221);
-			display: inline-block;
-			cursor: pointer;
-		}
-		&:focus + label {
-			outline: 1px dotted #000;
-			outline: -webkit-focus-ring-color auto 5px;
-		}
-		&:focus + label, & + label:hover {
-			background-color: rgb(180, 180, 180);
-		}
-	}
-	
-	input[type=button] {
-		border: none;
-		border-radius: $input-radius;
-		padding: 10px;
-		background-color: rgb(221, 221, 221);
-		&:hover {
-			background-color: rgb(180, 180, 180);
-		}
-		&[disabled] {
-			background-color: rgb(221, 221, 221);
-			opacity: 0.5;
-		}
-		&.record {
-			background-color: rgb(24, 182, 37);
-			color: white;
-			&:hover {
-				background-color: rgb(17, 124, 26);
-			}
-			&[value="Stop Recording"] {
-				background-color: rgb(182, 24, 24);
-				&:hover {
-					background-color: rgb(134, 19, 19);
-				}
-			}
-			&[disabled] {
-				background-color: rgb(221, 221, 221);
-				color: black;
-				opacity: 0.5;
-			}
-		}
-	}
-
-	hr {
-		border-color: rgb(221, 221, 221);
-		border-style: solid;
-		border-width: 0.5px;
-	}
-
+.version {
+	color: rgb(150, 150, 150);
+	font-size: 0.9rem;
+	margin-top: 0;
+	text-align: center;
+	width: 100%;
 }

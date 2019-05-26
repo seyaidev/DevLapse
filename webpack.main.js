@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const webpack = require("webpack");
 const path = require("path");
+const version = JSON.parse(require("fs").readFileSync("./package.json", {encoding: "utf8"})).version;
 
 module.exports = (env, argv) => {
 	const isProd = (argv.mode === "production");
@@ -31,7 +33,12 @@ module.exports = (env, argv) => {
 					use: "ts-loader"
 				}
 			]
-		}
+		},
+		plugins: [
+			new webpack.DefinePlugin({
+				_VERSION: JSON.stringify(version)
+			})
+		]
 	};
 	if (!isProd) {
 		config.devtool = "inline-source-map";

@@ -9,6 +9,8 @@ const miniCssExtractPlugin = new MiniCssExtractPlugin({
 	chunkFilename: "css/[id].css"
 });
 
+const version = JSON.parse(require("fs").readFileSync("./package.json", {encoding: "utf8"})).version;
+
 module.exports = (env, argv) => {
 	const isProd = (argv.mode === "production");
 	const public = path.resolve(__dirname, "./build/webview");
@@ -19,6 +21,7 @@ module.exports = (env, argv) => {
 	const config = {
 		target: "electron-renderer",
 		entry: {
+			jquery: "./src/webview/jquery.js",
 			bundle: "./src/webview/client.ts"
 		},
 		output: {
@@ -76,7 +79,17 @@ module.exports = (env, argv) => {
 					use: {
 						loader: "file-loader",
 						options: {
-							name: "imgs/[name].[ext]"
+							name: "./imgs/[name].[ext]"
+						}
+					}
+				},
+				{
+					test: /\.(ttf|eot|woff|woff2)$/,
+					use: {
+						loader: "file-loader",
+						options: {
+							name: "./fonts/[name].[ext]",
+							publicPath: "../"
 						}
 					}
 				}
@@ -86,7 +99,7 @@ module.exports = (env, argv) => {
 			htmlPlugin,
 			miniCssExtractPlugin,
 			new webpack.DefinePlugin({
-
+				_VERSION: JSON.stringify(version)
 			})
 		]
 	};

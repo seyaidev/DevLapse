@@ -28,6 +28,7 @@ function createWindow() {
 			nodeIntegration: true
 		}
 	});
+	mainWindow.setTitle("DevLapse");
 	mainWindow.setMenu(null);
 	mainWindow.loadFile("./build/webview/index.html");
 	if (DEBUG) mainWindow.webContents.openDevTools();
