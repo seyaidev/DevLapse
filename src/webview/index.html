@@ -5,41 +5,57 @@
 		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src * 'unsafe-inline'; font-src * data:">
 	</head>
 	<body>
-		<h1 class="title">DevLapse</h1>
-		<p class="version">&nbsp;</p>
-		<div class="ui segment">
-			<div class="ui dimmer" id="create-video-msg">
-				<div class="ui indeterminate text loader">Creating Video</div>
-			</div>
-			<form id="devlapse-form" class="ui form">
-				<div class="field">
-					<label for="interval">Interval (seconds)</label>
-					<input id="interval" type="number">
-				</div>
-				<div class="field">
-					<label for="imgtype">Image Format</label>
-					<select id="imgtype" class="ui fluid dropdown">
-						<option value="JPG">JPG</option>
-						<option value="PNG">PNG</option>
-					</select>
-				</div>
-				<div class="field">
-					<label for="imgdir">Save Path</label>
-					<input id="imgdir" class="ui button" type="button" value="Filepath">
-					<p id="imgdirselection">[No selection]</p>
-				</div>
-				<div class="field">
-					<label for="monitor">Monitor</label>
-					<input id="monitor" class="ui button" type="button" value="Select Monitor">
-					<span id="monitor-selection"></span>
-				</div>
-				
-				<button id="record-btn" class="ui icon button" disabled>
-					<i id="record-icon" class="circle icon color red"></i>
-				</button>
-				<button id="pause-btn" class="ui icon button" disabled><i id="pause-icon" class="pause icon"></i></button>
+		<div class="ui grid">
+			<div class="sixteen wide column">
+				<div class="ui segment">
+					<div class="ui dimmer" id="create-video-msg">
+						<div class="ui indeterminate text loader">Creating Video</div>
+					</div>
+					<form id="devlapse-form" class="ui equal width form">
 
-			</form>
+						<h4 class="ui dividing header">Record</h4>
+
+						<div class="field">
+							<label for="interval">Interval (seconds)</label>
+							<input id="interval" type="number">
+						</div>
+						<div class="field">
+							<label for="imgtype">Image Format</label>
+							<select id="imgtype" class="ui fluid dropdown">
+								<option value="JPG">JPG</option>
+								<option value="PNG">PNG</option>
+							</select>
+						</div>
+						<div class="field">
+							<label for="monitor">Monitor</label>
+							<input id="monitor" class="ui button" type="button" value="Select Monitor">
+							<span id="monitor-selection"></span>
+						</div>
+
+						<h4 class="ui dividing header">Output</h4>
+
+						<div class="field">
+							<label for="imgdir">Save Path</label>
+							<input id="imgdir" class="ui button" type="button" value="Filepath">
+							<p id="imgdirselection">[No selection]</p>
+						</div>
+						<div class="field">
+							<label for="fps">FPS</label>
+							<input id="fps" type="number">
+						</div>
+
+						<h4 class="ui dividing header">Controls</h4>
+						
+						<button id="record-btn" class="ui icon button" disabled>
+							<i id="record-icon" class="circle icon color red"></i>
+						</button>
+						<button id="pause-btn" class="ui icon button" disabled>
+							<i id="pause-icon" class="pause icon"></i>
+						</button>
+
+					</form>
+				</div>
+			</div>
 		</div>
 
 	</body>

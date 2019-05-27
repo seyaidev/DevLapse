@@ -2,6 +2,8 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import * as screenshot from "screenshot-desktop";
 import * as storage from "electron-json-storage";
 import * as recorder from "./recorder";
+import * as path from "path";
+import { exec } from "child_process";
 
 const DEBUG = false;
 
@@ -23,7 +25,7 @@ const singleMonitorPromise = screenshot.listDisplays().then((displays) => {
 function createWindow() {
 	mainWindow = new BrowserWindow({
 		width: DEBUG ? 700 : 400,
-		height: 500,
+		height: 650,
 		resizable: false,
 		maximizable: false,
 		webPreferences: {
@@ -114,9 +116,11 @@ ipcMain.on("select-monitor", (event, arg) => {
 ipcMain.on("record", (event, startRecord, state) => {
 	if (startRecord) {
 		event.reply("recording-change", true);
-		recordPromise = recorder.start(mainWindow, state.imageDirectory, state.selectedMonitor, state.imageType, state.interval);
+		recordPromise = recorder.start(mainWindow, state.imageDirectory, state.selectedMonitor, state.imageType, state.interval, state.fps);
 		recordPromise.then(() => {
 			mainWindow.webContents.send("video-complete");
+			const dirPath = path.dirname(state.imageDirectory);
+			exec(`start "" "${dirPath}"`);
 		});
 	} else {
 		event.reply("recording-change", false);
@@ -141,6 +145,7 @@ ipcMain.on("save-state", (event, state) => {
 ipcMain.on("load-state", (event) => {
 	storage.get("devlapse", (err, data) => {
 		if (err) throw err;
+		data.imageDirectory = "";
 		const monitorIdExists = (id: string): Promise<boolean> => {
 			return new Promise((resolve, reject) => {
 				screenshot.listDisplays().then((displays) => {

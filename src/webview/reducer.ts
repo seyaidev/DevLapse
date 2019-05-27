@@ -5,7 +5,8 @@ const defaultState = {
 	imageType: "jpg",
 	imageDirectory: "",
 	selectedMonitor: null,
-	recordState: 0
+	recordState: 0,
+	fps: 60,
 };
 
 const saveState = (state) => ipcRenderer.send("save-state", state);
@@ -49,6 +50,13 @@ export function reducer(state, action) {
 			};
 			saveState(state);
 			return state;
+		case "SET_FPS":
+				state = {
+					...state,
+					fps: action.fps
+				};
+				saveState(state);
+				return state;
 		default:
 			return state;
 	}

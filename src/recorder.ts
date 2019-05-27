@@ -7,6 +7,12 @@ import * as ffmpegPath from "ffmpeg-binaries";
 
 const ffmpegAbsPath = path.resolve(__dirname, ffmpegPath);
 
+interface DisplaySize {
+	width: number;
+	height: number;
+	displayId: string;
+}
+
 let recording = false;
 let paused = false;
 let quit = false;
@@ -62,13 +68,30 @@ function createTempDir(): Promise<TempDir> {
 	});
 }
 
+function getDisplaySize(displayId: string): Promise<DisplaySize> {
+	return screenshot.listDisplays().then((displays => {
+		const displaySize = {
+			width: 0,
+			height: 0,
+			displayId
+		};
+		for (const display of displays) {
+			if (display.id === displayId) {
+				displaySize.width = display.width;
+				displaySize.height = display.height;
+			}
+		}
+		return displaySize;
+	}));
+}
 
-function imagesToVideo(tempDir: TempDir, filepath: string, format: string): Promise<void> {
+
+function imagesToVideo(tempDir: TempDir, filepath: string, format: string, fps: number, displaySize: DisplaySize): Promise<void> {
 	if (!filepath.endsWith(".mp4")) {
 		filepath += ".mp4";
 	}
 	return new Promise((resolve, reject) => {
-		const command = `${ffmpegAbsPath} -y -r 60 -f image2 -s 1920x1080 -i ${path.join(tempDir.path, "f")}_%07d.${format} -vcodec libx264 -crf 25 -pix_fmt yuv420p ${filepath}`;
+		const command = `${ffmpegAbsPath} -y -r ${fps} -f image2 -s ${displaySize.width}x${displaySize.height} -i ${path.join(tempDir.path, "f")}_%07d.${format} -vcodec libx264 -crf 25 -pix_fmt yuv420p ${filepath}`;
 		console.log("FFMPEG:", command);
 		exec(command, (err, stdout, stderr) => {
 			if (err) {
@@ -84,7 +107,7 @@ function imagesToVideo(tempDir: TempDir, filepath: string, format: string): Prom
 }
 
 
-export function start(parent: BrowserWindow, filepath: string, displayId: string, format: string, interval: number): Promise<void> {
+export async function start(parent: BrowserWindow, filepath: string, displayId: string, format: string, interval: number, fps: number): Promise<void> {
 
 	if (recording) throw new Error("Already recording");
 
@@ -97,7 +120,6 @@ export function start(parent: BrowserWindow, filepath: string, displayId: string
 		const tempDir = await createTempDir();
 		let frame = 0;
 		while (id === recordId) {
-			//await sleep(interval);
 			curSleep = new Sleep(interval);
 			await curSleep.start();
 			if (id !== recordId) break;
@@ -112,9 +134,11 @@ export function start(parent: BrowserWindow, filepath: string, displayId: string
 		return tempDir;
 	};
 
+	const displaySize = await getDisplaySize(displayId);
+
 	return record().then((tempDir) => {
 		if (quit) return;
-		return imagesToVideo(tempDir, filepath, format);
+		return imagesToVideo(tempDir, filepath, format, fps, displaySize);
 	}).catch((err) => {
 		console.error(err);
 	});
