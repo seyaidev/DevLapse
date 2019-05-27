@@ -2,42 +2,45 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src *; font-src * data:">
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src * 'unsafe-inline'; font-src * data:">
 	</head>
 	<body>
 		<h1 class="title">DevLapse</h1>
-		<p class="version">v1.0.0</p>
-		<form id="devlapse-form" class="ui form">
-			<div class="field">
-				<label for="interval">Interval (seconds)</label>
-				<input id="interval" type="number">
+		<p class="version">&nbsp;</p>
+		<div class="ui segment">
+			<div class="ui dimmer" id="create-video-msg">
+				<div class="ui indeterminate text loader">Creating Video</div>
 			</div>
-			<div class="field">
-				<label for="imgtype">Image Format</label>
-				<select id="imgtype" class="ui fluid dropdown">
-					<option value="JPG">JPG</option>
-					<option value="PNG">PNG</option>
-				</select>
-			</div>
+			<form id="devlapse-form" class="ui form">
+				<div class="field">
+					<label for="interval">Interval (seconds)</label>
+					<input id="interval" type="number">
+				</div>
+				<div class="field">
+					<label for="imgtype">Image Format</label>
+					<select id="imgtype" class="ui fluid dropdown">
+						<option value="JPG">JPG</option>
+						<option value="PNG">PNG</option>
+					</select>
+				</div>
+				<div class="field">
+					<label for="imgdir">Save Path</label>
+					<input id="imgdir" class="ui button" type="button" value="Filepath">
+					<p id="imgdirselection">[No selection]</p>
+				</div>
+				<div class="field">
+					<label for="monitor">Monitor</label>
+					<input id="monitor" class="ui button" type="button" value="Select Monitor">
+					<span id="monitor-selection"></span>
+				</div>
+				
+				<button id="record-btn" class="ui icon button" disabled>
+					<i id="record-icon" class="circle icon color red"></i>
+				</button>
+				<button id="pause-btn" class="ui icon button" disabled><i id="pause-icon" class="pause icon"></i></button>
 
-			<!-- Still needs to be restyled with Semantic UI -->
-			<div class="input-group">
-				<label for="imgdir">Save Path</label>
-				<input id="imgdir" type="button" value="Filepath">
-				<p id="imgdirselection">[No selection]</p>
-			</div>
-			<hr/>
-			<div class="input-group">
-				<label for="monitor">Monitor</label>
-				<input id="monitor" type="button" value="Select Monitor">
-				<span id="monitor-selection"></span>
-			</div>
-			<hr/>
-			<input id="record-btn" class="record" type="button" value="Start Recording" disabled>
-			<input id="pause-btn" class="record" type="button" value="Pause" disabled>
-			<!-- ------------------------------------------- -->
+			</form>
+		</div>
 
-
-		</form>
 	</body>
 </html>

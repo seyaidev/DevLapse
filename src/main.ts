@@ -3,10 +3,12 @@ import * as screenshot from "screenshot-desktop";
 import * as storage from "electron-json-storage";
 import * as recorder from "./recorder";
 
-const DEBUG = true;
+const DEBUG = false;
 
 let mainWindow;
 let monitorSelectWindows = [];
+
+let recordPromise: Promise<void>;
 
 let singleDisplay = null;
 const singleMonitorPromise = screenshot.listDisplays().then((displays) => {
@@ -20,7 +22,7 @@ const singleMonitorPromise = screenshot.listDisplays().then((displays) => {
 
 function createWindow() {
 	mainWindow = new BrowserWindow({
-		width: DEBUG ? 700 : 300,
+		width: DEBUG ? 700 : 400,
 		height: 500,
 		resizable: false,
 		maximizable: false,
@@ -112,7 +114,10 @@ ipcMain.on("select-monitor", (event, arg) => {
 ipcMain.on("record", (event, startRecord, state) => {
 	if (startRecord) {
 		event.reply("recording-change", true);
-		recorder.start(mainWindow, state.imageDirectory, state.selectedMonitor, state.imageType, state.interval);
+		recordPromise = recorder.start(mainWindow, state.imageDirectory, state.selectedMonitor, state.imageType, state.interval);
+		recordPromise.then(() => {
+			mainWindow.webContents.send("video-complete");
+		});
 	} else {
 		event.reply("recording-change", false);
 		recorder.stop();

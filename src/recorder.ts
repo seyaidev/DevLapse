@@ -63,7 +63,7 @@ function createTempDir(): Promise<TempDir> {
 }
 
 
-function imagesToVideo(tempDir: TempDir, filepath: string, format: string) {
+function imagesToVideo(tempDir: TempDir, filepath: string, format: string): Promise<void> {
 	if (!filepath.endsWith(".mp4")) {
 		filepath += ".mp4";
 	}
@@ -84,7 +84,7 @@ function imagesToVideo(tempDir: TempDir, filepath: string, format: string) {
 }
 
 
-export function start(parent: BrowserWindow, filepath: string, displayId: string, format: string, interval: number) {
+export function start(parent: BrowserWindow, filepath: string, displayId: string, format: string, interval: number): Promise<void> {
 
 	if (recording) throw new Error("Already recording");
 

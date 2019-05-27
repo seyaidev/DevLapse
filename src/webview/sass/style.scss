@@ -6,7 +6,8 @@ $input-radius: 40px;
 body {
 	font-family: "Ubuntu", sans-serif;
 	user-select: none;
-	margin: 10px;
+	margin-left: 28px;
+	margin-right: 28px;
 }
 
 .title {
@@ -22,4 +23,13 @@ body {
 	margin-top: 0;
 	text-align: center;
 	width: 100%;
+}
+
+.color {
+	.red {
+		color: red;
+	}
+	.green {
+		color: green;
+	}
 }

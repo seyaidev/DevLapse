@@ -4,11 +4,13 @@ import { reducer } from "./reducer";
 const { dialog } = require("electron").remote;
 import "../../semantic/dist/semantic.min.js";
 
+
 // Static assets:
 import "./sass/style.scss";
 import "./monitor.html";
 
-//declare const _VERSION: string;
+declare const _VERSION: string;
+declare const $;
 
 const store = createStore(reducer);
 
@@ -30,6 +32,12 @@ const imgDir = document.getElementById("imgdir") as HTMLInputElement;
 const monitor = document.getElementById("monitor") as HTMLInputElement;
 const monitorSelection = document.getElementById("monitor-selection");
 
+$(".version").text(`v${_VERSION}`);
+
+$(imgType).dropdown({
+	clearable: false
+});
+
 const bindValueToStore = (element, actionType, actionName) => {
 	element.addEventListener("change", (event) => {
 		const val = (element === imgDir ? element.files[0].path : element.value);
@@ -38,6 +46,11 @@ const bindValueToStore = (element, actionType, actionName) => {
 };
 
 let recordingState = RecordState.NOT_RECORDING;
+const setRecordingState = (state: number) => {
+	if (state === recordingState) return;
+	recordingState = state;
+	store.dispatch({type: "SET_RECORD_STATE", recordState: state});
+};
 
 ipcRenderer.on("monitor-selected", (event, monitorId, singleMonitor) => {
 	monitorSelection.innerHTML = monitorId;
@@ -47,13 +60,19 @@ ipcRenderer.on("monitor-selected", (event, monitorId, singleMonitor) => {
 	}
 });
 
+ipcRenderer.on("video-complete", (event) => {
+	$("#create-video-msg").removeClass("ui active dimmer").addClass("ui dimmer");
+	document.getElementById("imgdirselection").innerHTML = "[No selection]";
+	store.dispatch({type: "SET_IMAGE_DIRECTORY", imageDirectory: ""});
+});
+
 ipcRenderer.on("recording-change", (event, isRecording) => {
 	if (isRecording) {
-		recordingState = RecordState.RECORDING;
+		setRecordingState(RecordState.RECORDING);
 		recordBtn.value = "Stop Recording";
 		pauseBtn.disabled = false;
 	} else {
-		recordingState = RecordState.NOT_RECORDING;
+		setRecordingState(RecordState.NOT_RECORDING);
 		recordBtn.value = "Start Recording";
 		pauseBtn.value = "Pause";
 		pauseBtn.disabled = true;
@@ -62,28 +81,30 @@ ipcRenderer.on("recording-change", (event, isRecording) => {
 
 ipcRenderer.on("pause-change", (event, isPaused) => {
 	if (isPaused) {
-		recordingState = RecordState.PAUSED;
+		setRecordingState(RecordState.PAUSED);
 		pauseBtn.value = "Resume";
 	} else {
-		recordingState = RecordState.RECORDING;
+		setRecordingState(RecordState.RECORDING);
 		pauseBtn.value = "Pause";
 	}
 });
 
 const canStartRecording = () => {
-	return (interval.value && imgType.value && imgDir.value && store.getState().selectedMonitor);
+	const state = store.getState();
+	return (interval.value && imgType.value && state.imageDirectory && state.selectedMonitor);
 };
 
 recordBtn.onclick = () => {
 	switch(recordingState) {
 		case RecordState.RECORDING:
 		case RecordState.PAUSED:
-			recordingState = RecordState.BUSY;
+			$("#create-video-msg").removeClass("ui dimmer").addClass("ui active dimmer");
+			setRecordingState(RecordState.BUSY);
 			ipcRenderer.send("record", false);
 			break;
 		case RecordState.NOT_RECORDING:
 			if (canStartRecording()) {
-				recordingState = RecordState.BUSY;
+				setRecordingState(RecordState.BUSY);
 				ipcRenderer.send("record", true, store.getState());
 			}
 			break;
@@ -95,11 +116,11 @@ recordBtn.onclick = () => {
 pauseBtn.onclick = () => {
 	switch(recordingState) {
 		case RecordState.RECORDING:
-			recordingState = RecordState.BUSY;
+			setRecordingState(RecordState.BUSY);
 			ipcRenderer.send("pause", true);
 			break;
 		case RecordState.PAUSED:
-			recordingState = RecordState.BUSY;
+			setRecordingState(RecordState.BUSY);
 			ipcRenderer.send("pause", false);
 			break;
 		default:
@@ -113,7 +134,6 @@ const afterStateLoaded = (initialState) => {
 	monitorSelection.innerHTML = initialState.selectedMonitor || "";
 	bindValueToStore(imgType, "SET_IMAGE_TYPE", "imageType");
 	interval.addEventListener("change", (event) => {
-		console.log("Interval changed");
 		const num = parseFloat(interval.value);
 		let n = num;
 		if ((!num) || num < MIN_INTERVAL || num > MAX_INTERVAL) {
@@ -146,12 +166,16 @@ ipcRenderer.once("state-loaded", (event, state) => {
 ipcRenderer.send("load-state");
 
 store.subscribe(() => {
-	const disableFields = recordingState !== RecordState.NOT_RECORDING;
+	const disableFields = (recordingState !== RecordState.NOT_RECORDING);
+	const isRecording = (recordingState === RecordState.RECORDING);
+	const isPaused = (recordingState === RecordState.PAUSED);
 	recordBtn.disabled = !canStartRecording();
 	interval.disabled = disableFields;
 	imgType.disabled = disableFields;
 	imgDir.disabled = disableFields;
 	monitor.disabled = disableFields;
+	$("#record-icon").removeClass("circle stop icon").addClass(`${isRecording || isPaused ? "stop" : "circle"} icon`);
+	$("#pause-icon").removeClass("pause play icon").addClass(`${isPaused ? "play" : "pause"} icon`);
 });
 
 document.getElementById("devlapse-form").addEventListener("submit", (event) => {
