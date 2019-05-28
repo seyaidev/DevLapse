@@ -12,14 +12,8 @@
 		"dev": "npm run semantic && npm run install_build && npm run devwatch",
 		"devwatch": "concurrently --kill-others \"webpack --config webpack.main.js --mode development --watch\" \"webpack --config webpack.renderer.js --mode development --watch\"",
 		"semantic": "gulp --gulpfile ./semantic/gulpfile.js build",
+		"dist": "electron-packager ./ devlapse --out dist/ --overwrite --prune \"true\" --ignore \"src|semantic\"",
 		"start": "electron ."
-	},
-	"build": {
-		"appId": "com.sleitnick.devlapse",
-		"productName": "DevLapse",
-		"win": {
-			"target": "nsis"
-		}
 	},
 	"repository": {
 		"type": "git",
@@ -41,7 +35,7 @@
 		"concurrently": "^4.1.0",
 		"css-loader": "^2.1.1",
 		"electron": "^5.0.2",
-		"electron-builder": "^20.41.0",
+		"electron-packager": "^13.1.1",
 		"eslint": "^5.16.0",
 		"file-loader": "^3.0.1",
 		"gulp": "^3.9.1",
