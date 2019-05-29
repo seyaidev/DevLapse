@@ -20,6 +20,9 @@ module.exports = (env, argv) => {
 	});
 	const config = {
 		target: "electron-renderer",
+		node: {
+			__dirname: false
+		},
 		entry: {
 			jquery: "./src/webview/jquery.js",
 			bundle: "./src/webview/client.ts"

@@ -8,11 +8,12 @@
 	"license": "MIT",
 	"scripts": {
 		"install_build": "npm i --prefix ./build screenshot-desktop ffmpeg-binaries",
-		"build": "npm run install_build && webpack --config webpack.main.js --mode production && webpack --config webpack.renderer.js --mode production",
+		"build": "npm run install_build && webpack --config webpack.main.js --mode production && webpack --config webpack.renderer.js --mode production && npm run build_for_dist",
+		"build_for_dist": "rm -rf build_dist && mkdir build_dist && cp -r build build_dist/build && cp package.json build_dist/package.json",
 		"dev": "npm run semantic && npm run install_build && npm run devwatch",
 		"devwatch": "concurrently --kill-others \"webpack --config webpack.main.js --mode development --watch\" \"webpack --config webpack.renderer.js --mode development --watch\"",
 		"semantic": "gulp --gulpfile ./semantic/gulpfile.js build",
-		"dist": "electron-packager ./ devlapse --out dist/ --overwrite --prune \"true\" --ignore \"src|semantic\"",
+		"dist_win32": "npm run build && electron-packager ./build_dist devlapse --out dist/ --overwrite --prune \"false\" --arch \"x64, ia32\" --platform \"win32\" --ignore \"src|semantic\"",
 		"start": "electron ."
 	},
 	"repository": {
