@@ -13,7 +13,7 @@
 		"dev": "npm run semantic && npm run install_build && npm run devwatch",
 		"devwatch": "concurrently --kill-others \"webpack --config webpack.main.js --mode development --watch\" \"webpack --config webpack.renderer.js --mode development --watch\"",
 		"semantic": "gulp --gulpfile ./semantic/gulpfile.js build",
-		"dist_win32": "npm run build && electron-packager ./build_dist devlapse --out dist/ --overwrite --prune \"false\" --arch \"x64, ia32\" --platform \"win32\" --ignore \"src|semantic\"",
+		"dist_win32": "npm run build && electron-packager ./build_dist devlapse --out dist/ --overwrite --prune \"false\" --arch \"x64, ia32\" --platform \"win32\" --icon \"imgs/icon.ico\" --ignore \"src|semantic\"",
 		"start": "electron ."
 	},
 	"repository": {
